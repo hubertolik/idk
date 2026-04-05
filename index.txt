@@ -2,186 +2,238 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Modern Shop</title>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<title>NigSense Premium Shop</title>
 
-body {
-    font-family: "Segoe UI", sans-serif;
-    background: #0f0f0f;
-    color: white;
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Inter',sans-serif;
+    background: radial-gradient(circle at top,#1a1a2e,#0f0f0f);
+    color:white;
 }
 
 /* NAV */
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background: rgba(20,20,20,0.9);
+nav{
+    display:flex;
+    justify-content:space-between;
+    padding:20px 40px;
+    backdrop-filter: blur(15px);
+    background:rgba(0,0,0,0.4);
+}
+
+nav h1{
+    color:#8a6cff;
+    letter-spacing:1px;
+}
+
+nav span{
+    cursor:pointer;
+}
+
+/* CATEGORY */
+.categories{
+    display:flex;
+    gap:15px;
+    padding:20px 40px;
+}
+
+.cat{
+    padding:10px 18px;
+    border-radius:20px;
+    background:#1c1c1c;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.cat:hover{
+    background:#8a6cff;
+}
+
+/* GRID */
+.container{
+    padding:20px 40px;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:20px;
     backdrop-filter: blur(10px);
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
 }
 
-nav h1 {
-    color: #7c5cff;
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(120deg,transparent,#8a6cff,transparent);
+    opacity:0;
+    transition:0.3s;
 }
 
-nav a {
-    color: #ccc;
-    text-decoration: none;
-    margin-left: 20px;
-    transition: 0.2s;
+.card:hover::before{
+    opacity:0.2;
 }
 
-nav a:hover {
-    color: white;
+.card:hover{
+    transform:translateY(-8px) scale(1.02);
 }
 
-/* CATEGORY MENU */
-.categories {
-    display: flex;
-    gap: 15px;
-    padding: 20px;
+.price{
+    color:#8a6cff;
+    margin:10px 0;
 }
 
-.cat {
-    padding: 10px 15px;
-    background: #1a1a1a;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
+button{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#8a6cff;
+    color:white;
+    cursor:pointer;
 }
 
-.cat:hover {
-    background: #7c5cff;
+/* CART PANEL */
+.cart-panel{
+    position:fixed;
+    right:-350px;
+    top:0;
+    width:350px;
+    height:100%;
+    background:#111;
+    padding:20px;
+    transition:0.4s;
 }
 
-/* PRODUCTS */
-.container {
-    padding: 20px;
+.cart-panel.open{
+    right:0;
 }
 
-.products {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+.cart-item{
+    margin:10px 0;
+    border-bottom:1px solid #333;
+    padding-bottom:10px;
 }
 
-.card {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 15px;
-    width: 220px;
-    transition: 0.3s;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+/* MODAL */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(124,92,255,0.5);
-}
-
-.price {
-    color: #7c5cff;
-    margin: 10px 0;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: #7c5cff;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover {
-    background: #5a3fff;
-}
-
-/* CART */
-.cart {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #1a1a1a;
-    padding: 15px;
-    border-radius: 10px;
+.modal-box{
+    background:#1a1a1a;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
 }
 </style>
 </head>
 <body>
 
 <nav>
-    <h1>NigSense Shop</h1>
-    <div>
-        <a href="#">Home</a>
-        <a href="#">Shop</a>
-        <a href="#">Cart (<span id="cart">0</span>)</a>
-    </div>
+    <h1>NigSense</h1>
+    <span onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</span>
 </nav>
 
 <div class="categories">
-    <div class="cat" onclick="showCategory('subs')">Premium Subscriptions</div>
-    <div class="cat" onclick="showCategory('tools')">Tools</div>
-    <div class="cat" onclick="showCategory('other')">Other</div>
+    <div class="cat" onclick="show('subs')">Subscriptions</div>
+    <div class="cat" onclick="show('premium')">Premium</div>
+    <div class="cat" onclick="show('tools')">Tools</div>
 </div>
 
 <div class="container">
     <div class="products" id="products"></div>
 </div>
 
-<div class="cart">
-    Items: <span id="cartCount">0</span>
+<!-- CART -->
+<div class="cart-panel" id="cartPanel">
+    <h2>Cart</h2>
+    <div id="cartItems"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <h2>Added to cart ✔</h2>
+        <br>
+        <button onclick="closeModal()">OK</button>
+    </div>
 </div>
 
 <script>
-let cart = 0;
-
 const data = {
-    subs: [
-        {name: "NigSense Basic", price: "$5/month"},
-        {name: "NigSense Pro", price: "$15/month"},
-        {name: "NigSense Ultra", price: "$30/month"}
+    subs:[
+        {name:"NigSense Basic",price:5},
+        {name:"NigSense Pro",price:15},
+        {name:"NigSense Ultra",price:30}
     ],
-    tools: [
-        {name: "Booster Tool", price: "$10"},
-        {name: "Optimizer", price: "$12"}
+    premium:[
+        {name:"Lifetime Access",price:99},
+        {name:"VIP Pack",price:49}
     ],
-    other: [
-        {name: "VIP Role", price: "$3"},
-        {name: "Custom Badge", price: "$2"}
+    tools:[
+        {name:"Optimizer",price:12},
+        {name:"FPS Booster",price:10}
     ]
 };
 
-function showCategory(cat) {
-    const container = document.getElementById("products");
-    container.innerHTML = "";
+let cart=[];
 
-    data[cat].forEach(item => {
-        container.innerHTML += `
-            <div class="card">
-                <h3>${item.name}</h3>
-                <div class="price">${item.price}</div>
-                <button onclick="addToCart()">Buy</button>
-            </div>
-        `;
+function show(cat){
+    const el=document.getElementById("products");
+    el.innerHTML="";
+
+    data[cat].forEach(item=>{
+        el.innerHTML+=`
+        <div class="card">
+            <h3>${item.name}</h3>
+            <div class="price">$${item.price}</div>
+            <button onclick='add(${JSON.stringify(item)})'>Buy</button>
+        </div>`;
     });
 }
 
-function addToCart() {
-    cart++;
-    document.getElementById("cart").innerText = cart;
-    document.getElementById("cartCount").innerText = cart;
+function add(item){
+    cart.push(item);
+    updateCart();
+    document.getElementById("modal").style.display="flex";
 }
 
-// default load
-showCategory('subs');
+function updateCart(){
+    document.getElementById("cartCount").innerText=cart.length;
+    const list=document.getElementById("cartItems");
+    list.innerHTML="";
+    cart.forEach(i=>{
+        list.innerHTML+=`<div class="cart-item">${i.name} - $${i.price}</div>`;
+    });
+}
+
+function toggleCart(){
+    document.getElementById("cartPanel").classList.toggle("open");
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+show("subs");
 </script>
 
 </body>
