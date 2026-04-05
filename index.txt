@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Modern Shop</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #0f0f0f;
+    color: white;
+}
+
+/* NAV */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(20,20,20,0.9);
+    backdrop-filter: blur(10px);
+}
+
+nav h1 {
+    color: #7c5cff;
+}
+
+nav a {
+    color: #ccc;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* CATEGORY MENU */
+.categories {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+}
+
+.cat {
+    padding: 10px 15px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cat:hover {
+    background: #7c5cff;
+}
+
+/* PRODUCTS */
+.container {
+    padding: 20px;
+}
+
+.products {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 15px;
+    width: 220px;
+    transition: 0.3s;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(124,92,255,0.5);
+}
+
+.price {
+    color: #7c5cff;
+    margin: 10px 0;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #7c5cff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #5a3fff;
+}
+
+/* CART */
+.cart {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 10px;
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <h1>NigSense Shop</h1>
+    <div>
+        <a href="#">Home</a>
+        <a href="#">Shop</a>
+        <a href="#">Cart (<span id="cart">0</span>)</a>
+    </div>
+</nav>
+
+<div class="categories">
+    <div class="cat" onclick="showCategory('subs')">Premium Subscriptions</div>
+    <div class="cat" onclick="showCategory('tools')">Tools</div>
+    <div class="cat" onclick="showCategory('other')">Other</div>
+</div>
+
+<div class="container">
+    <div class="products" id="products"></div>
+</div>
+
+<div class="cart">
+    Items: <span id="cartCount">0</span>
+</div>
+
+<script>
+let cart = 0;
+
+const data = {
+    subs: [
+        {name: "NigSense Basic", price: "$5/month"},
+        {name: "NigSense Pro", price: "$15/month"},
+        {name: "NigSense Ultra", price: "$30/month"}
+    ],
+    tools: [
+        {name: "Booster Tool", price: "$10"},
+        {name: "Optimizer", price: "$12"}
+    ],
+    other: [
+        {name: "VIP Role", price: "$3"},
+        {name: "Custom Badge", price: "$2"}
+    ]
+};
+
+function showCategory(cat) {
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    data[cat].forEach(item => {
+        container.innerHTML += `
+            <div class="card">
+                <h3>${item.name}</h3>
+                <div class="price">${item.price}</div>
+                <button onclick="addToCart()">Buy</button>
+            </div>
+        `;
+    });
+}
+
+function addToCart() {
+    cart++;
+    document.getElementById("cart").innerText = cart;
+    document.getElementById("cartCount").innerText = cart;
+}
+
+// default load
+showCategory('subs');
+</script>
+
+</body>
+</html>
