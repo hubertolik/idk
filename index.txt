@@ -1,240 +1,637 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>NigSense Premium Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NigSense Premium Shop – nowy UI, bez emoji</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap"
+      rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+/* ──────────────────────────────────────
+   0️⃣  ZMIENNE GLOBALNE & RESET
+   ────────────────────────────────────── */
+:root{
+    /* Kolory */
+    --clr-primary:        #8a6cff;
+    --clr-primary-dark:   #5d44e5;
+    --clr-primary-darker:#4b33c0;
+    --clr-bg-primary:    #0f0f1a;
+    --clr-bg-dark:       #040411;
+    --clr-bg-glass:      rgba(255,255,255,.08);
+    --clr-bg-glass-bd:   rgba(255,255,255,.14);
+    --clr-text:          #eaeaea;
+    --clr-muted:         #999;
 
+    /* Layout / Animacje */
+    --radius: .75rem;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.4);
+    --duration: .25s ease;
+
+    /* Typografia responsywna */
+    --fs-base: clamp(0.9rem,1vw + .5rem,1.2rem);
+    --fs-h1:   clamp(1.5rem,2.5vw + .5rem,2.4rem);
+    --fs-h2:   clamp(1.25rem,2vw + .4rem,2rem);
+    --fs-h3:   clamp(1rem,1.5vw + .3rem,1.5rem);
+}
+*,
+*::before,
+*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
 body{
-    font-family:'Inter',sans-serif;
-    background: radial-gradient(circle at top,#1a1a2e,#0f0f0f);
-    color:white;
+    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    font-size:var(--fs-base);
+    line-height:1.5;
+    background:radial-gradient(circle at top,var(--clr-bg-primary),var(--clr-bg-dark));
+    color:var(--clr-text);
+    overflow-x:hidden;
+    cursor:none;                     /* własny kursor */
 }
 
-/* NAV */
-nav{
-    display:flex;
-    justify-content:space-between;
-    padding:20px 40px;
-    backdrop-filter: blur(15px);
-    background:rgba(0,0,0,0.4);
-}
+/* ──────────────────────────────────────
+   1️⃣  TYPOGRAPHY
+   ────────────────────────────────────── */
+h1{font-size:var(--fs-h1);font-weight:700}
+h2{font-size:var(--fs-h2);font-weight:700}
+h3{font-size:var(--fs-h3);font-weight:600}
+button{font-family:inherit}
 
-nav h1{
-    color:#8a6cff;
-    letter-spacing:1px;
-}
-
-nav span{
-    cursor:pointer;
-}
-
-/* CATEGORY */
-.categories{
-    display:flex;
-    gap:15px;
-    padding:20px 40px;
-}
-
-.cat{
-    padding:10px 18px;
-    border-radius:20px;
-    background:#1c1c1c;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.cat:hover{
-    background:#8a6cff;
-}
-
-/* GRID */
-.container{
-    padding:20px 40px;
-}
-
-.products{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:rgba(255,255,255,0.05);
-    border-radius:20px;
-    padding:20px;
-    backdrop-filter: blur(10px);
-    transition:0.3s;
+/* ──────────────────────────────────────
+   2️⃣  PRZYCISKI – BAZA (dark + neon)
+   ────────────────────────────────────── */
+.btn{
     position:relative;
-    overflow:hidden;
-}
-
-.card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(120deg,transparent,#8a6cff,transparent);
-    opacity:0;
-    transition:0.3s;
-}
-
-.card:hover::before{
-    opacity:0.2;
-}
-
-.card:hover{
-    transform:translateY(-8px) scale(1.02);
-}
-
-.price{
-    color:#8a6cff;
-    margin:10px 0;
-}
-
-button{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    background:#8a6cff;
-    color:white;
-    cursor:pointer;
-}
-
-/* CART PANEL */
-.cart-panel{
-    position:fixed;
-    right:-350px;
-    top:0;
-    width:350px;
-    height:100%;
-    background:#111;
-    padding:20px;
-    transition:0.4s;
-}
-
-.cart-panel.open{
-    right:0;
-}
-
-.cart-item{
-    margin:10px 0;
-    border-bottom:1px solid #333;
-    padding-bottom:10px;
-}
-
-/* MODAL */
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.7);
-    display:none;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
+    gap:.25rem;
+    padding:.6rem 1.2rem;
+    font-weight:600;
+    font-size:.95rem;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+    overflow:hidden;
+    transition:background var(--duration),
+                transform .15s,
+                box-shadow .15s;
+    box-shadow:0 2px 6px rgba(138,108,255,.3);
+    background:var(--btn-bg);
+    color:var(--btn-color);
+}
+.btn::before{
+    content:"";
+    position:absolute;inset:0;
+    background:var(--btn-glow);
+    filter:blur(8px);
+    opacity:0;
+    transition:opacity .3s;
+    pointer-events:none;
+}
+.btn:hover{
+    background:var(--btn-bg-hover);
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(138,108,255,.45);
+}
+.btn:hover::before{opacity:.6}
+.btn:active{transform:scale(.97)}
+
+.btn-primary{
+    --btn-bg: var(--clr-primary-dark);
+    --btn-bg-hover: var(--clr-primary);
+    --btn-glow: rgba(138,108,255,.2);
+    --btn-color:#fff;
+}
+.btn-outline{
+    --btn-bg: transparent;
+    --btn-bg-hover: rgba(138,108,255,.08);
+    --btn-glow: rgba(138,108,255,.15);
+    --btn-color: var(--clr-primary-dark);
+    border:2px solid var(--clr-primary-dark);
 }
 
-.modal-box{
-    background:#1a1a1a;
-    padding:30px;
-    border-radius:20px;
+/* ──────────────────────────────────────
+   3️⃣  HEADER / NAV
+   ────────────────────────────────────── */
+header{
+    position:sticky;top:0;
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--clr-bg-glass-bd);
+    z-index:10;
+}
+nav{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:1rem 2rem;
+}
+nav .brand{color:var(--clr-primary)}
+nav .cart-toggle{background:none}
+
+/* neon‑glow on header title */
+nav .brand{
+    animation: neonGlow 2s ease-in-out infinite alternate;
+}
+@keyframes neonGlow{
+    from{text-shadow:0 0 4px var(--clr-primary),0 0 12px var(--clr-primary);}
+    to  {text-shadow:0 0 8px var(--clr-primary-light),0 0 20px var(--clr-primary-light);}
+}
+
+/* ──────────────────────────────────────
+   4️⃣  PASEK KATEGORII (pigułki)
+   ────────────────────────────────────── */
+.category-bar{
+    display:flex;gap:.75rem;flex-wrap:wrap;
+    padding:.5rem 2rem;
+}
+.category-bar button{
+    padding:.45rem .9rem;
+}
+.category-bar button.active{
+    background:var(--clr-primary-dark);
+    color:#fff;
+    border-color:var(--clr-primary-dark);
+}
+
+/* ──────────────────────────────────────
+   5️⃣  SIATKA PRODUKTÓW
+   ────────────────────────────────────── */
+.main{padding:1rem 2rem}
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1.5rem;
+}
+.product-card{
+    background:var(--clr-bg-glass);
+    border:1px solid var(--clr-bg-glass-bd);
+    border-radius:var(--radius);
+    backdrop-filter:blur(6px);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:var(--duration);
+    box-shadow:var(--shadow-sm);
+}
+.product-card:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-md);
+}
+
+/* placeholder – zamiast emoji paczki */
+.product-card .placeholder{
+    width:100%;
+    aspect-ratio:1/1;
+    background:#555;
+    border-radius:var(--radius);
+}
+
+/* informacje o produkcie */
+.product-card .info{
+    padding:1rem;
+    flex-grow:1;
+    display:flex;
+    flex-direction:column;
+}
+.product-card h3{margin-bottom:.5rem}
+.product-card .price{
+    margin:.75rem 0;
+    font-weight:500;
+    background:linear-gradient(90deg,var(--clr-primary),var(--clr-primary-light));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ──────────────────────────────────────
+   6️⃣  PANEL KOSZYKA (slide‑out)
+   ────────────────────────────────────── */
+.cart-panel{
+    position:fixed;top:0;right:-360px;
+    width:340px;height:100vh;
+    background:rgba(4,4,17,.85);
+    backdrop-filter:blur(8px);
+    border-left:1px solid var(--clr-bg-glass-bd);
+    padding:2rem 1.5rem;
+    display:flex;flex-direction:column;
+    transition:right .35s var(--duration);
+    z-index:9;
+}
+.cart-panel.open{right:0}
+.cart-panel h2{margin-bottom:1rem}
+.cart-items{
+    flex-grow:1;overflow-y:auto;
+}
+.cart-item{
+    padding:.5rem 0;
+    border-bottom:1px solid var(--clr-bg-glass-bd);
+    font-size:.95rem;
+}
+
+/* ──────────────────────────────────────
+   7️⃣  MODALE (checkout)
+   ────────────────────────────────────── */
+.overlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    align-items:center;justify-content:center;
+    backdrop-filter:blur(2px);
+    z-index:8;
+}
+.overlay.show{display:flex}
+.modal{
+    background:var(--clr-bg-dark);
+    border:1px solid var(--clr-primary);
+    border-radius:var(--radius);
+    padding:2rem 1.5rem;
     text-align:center;
+    width:90%;max-width:340px;
+    animation:pop .2s ease-out;
+}
+@keyframes pop{
+    from{transform:scale(.85);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
+.modal h2{color:var(--clr-primary);margin-bottom:1rem}
+
+/* ──────────────────────────────────────
+   8️⃣  TOAST (krótkie powiadomienie)
+   ────────────────────────────────────── */
+.toast{
+    position:fixed;bottom:2rem;right:2rem;
+    background:var(--clr-primary);
+    color:#fff;
+    padding:.75rem 1.25rem;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .3s,transform .3s;
+    z-index:1000;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ──────────────────────────────────────
+   9️⃣  KURSOR
+   ────────────────────────────────────── */
+.cursor{
+    position:fixed;width:12px;height:12px;
+    border:2px solid var(--clr-primary);
+    border-radius:50%;pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:9999;transition:transform .1s;
+}
+.cursor-glow{
+    position:fixed;width:35px;height:35px;
+    background:rgba(138,108,255,.15);
+    border-radius:50%;pointer-events:none;
+    filter:blur(8px);
+    transform:translate(-50%,-50%);
+    z-index:9998;
+}
+
+/* ──────────────────────────────────────
+   🔹  GIMMICKS – pozostałe (bez emoji)
+   ────────────────────────────────────── */
+
+/* 10️⃣  GWIAZDY W TLE */
+#starfield{
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:1;
+}
+.star{
+    position:absolute;
+    width:2px;height:2px;
+    background:#fff;
+    border-radius:50%;
+    opacity:.8;
+    animation:twinkle 5s infinite alternate;
+}
+@keyframes twinkle{
+    from{opacity:.2;transform:scale(.5);}
+    to  {opacity:.9;transform:scale(1.2);}
+}
+
+/* 11️⃣  LED‑STRIP – neonowy pasek dolny */
+#led-strip{
+    position:fixed;bottom:0;left:0;right:0;height:8px;
+    background:linear-gradient(90deg,
+        var(--clr-primary) 0%,
+        var(--clr-primary-light) 50%,
+        var(--clr-primary) 100%);
+    animation:ledMove 4s linear infinite;
+    z-index:2;
+}
+@keyframes ledMove{
+    from{background-position:0 0;}
+    to{background-position:200% 0;}
+}
+
+/* 12️⃣  BOUNCING BALL – w rogu ekranu */
+#bouncing-ball{
+    position:fixed;bottom:12vh;right:12vw;
+    width:24px;height:24px;
+    background:radial-gradient(circle,var(--clr-primary),var(--clr-primary-darker));
+    border-radius:50%;
+    animation:bounceBall 3s ease-in-out infinite;
+    pointer-events:none;
+    z-index:2;
+}
+@keyframes bounceBall{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-30px);}
+}
+
+/* 13️⃣  FIREWORKS – canvas (pozostały, nie używa emoji) */
+canvas#fireworks{
+    position:fixed;inset:0;pointer-events:none;z-index:5;
+}
+
+/* 14️⃣  SCROLLBAR */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-thumb{background:var(--clr-primary);border-radius:4px}
+
+/* 15️⃣  RESPONSIVE */
+@media (max-width:560px){
+    nav,.category-bar,.main{padding:.75rem 1rem}
+    .cart-panel{width:100%;max-width:320px}
 }
 </style>
 </head>
 <body>
 
-<nav>
-    <h1>NigSense</h1>
-    <span onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</span>
-</nav>
+<!-- ==================== 1️⃣ HEADER ==================== -->
+<header>
+    <nav>
+        <div class="brand">NigSense</div>
+        <!-- usunięto emoji 🛒 -->
+        <button class="cart-toggle btn btn-outline" aria-label="Toggle cart" onclick="toggleCart()">
+            Cart (<span id="cartCount">0</span>)
+        </button>
+    </nav>
+</header>
 
-<div class="categories">
-    <div class="cat" onclick="show('subs')">Subscriptions</div>
-    <div class="cat" onclick="show('premium')">Premium</div>
-    <div class="cat" onclick="show('tools')">Tools</div>
+<!-- ==================== 2️⃣ CATEGORY BAR ==================== -->
+<div class="category-bar" role="tablist">
+    <button class="btn btn-outline active" data-cat="subs"   role="tab">Subscriptions</button>
+    <button class="btn btn-outline"          data-cat="premium"role="tab">Premium</button>
+    <button class="btn btn-outline"          data-cat="tools"  role="tab">Tools</button>
+    <button class="btn btn-outline"          data-cat="fun"    role="tab">Fun‑Zone</button>
 </div>
 
-<div class="container">
-    <div class="products" id="products"></div>
-</div>
+<!-- ==================== 3️⃣ MAIN (PRODUCTS) ==================== -->
+<main class="main">
+    <section class="products" id="products"></section>
+</main>
 
-<!-- CART -->
-<div class="cart-panel" id="cartPanel">
-    <h2>Cart</h2>
-    <div id="cartItems"></div>
-</div>
+<!-- ==================== 4️⃣ CART PANEL ==================== -->
+<aside class="cart-panel" id="cartPanel" aria-label="Shopping cart">
+    <h2>Your Cart</h2>
+    <div class="cart-items" id="cartItems"></div>
+    <button class="btn btn-primary checkout" onclick="openCheckout()">Checkout</button>
+</aside>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-    <div class="modal-box">
-        <h2>Added to cart ✔</h2>
-        <br>
-        <button onclick="closeModal()">OK</button>
+<!-- ==================== 5️⃣ MODAL – CHECKOUT ==================== -->
+<div class="overlay" id="checkoutOverlay">
+    <div class="modal">
+        <h2>Payment</h2>
+        <label><input type="radio" name="pay"> Card</label><br><br>
+        <label><input type="radio" name="pay"> PayPal</label><br><br>
+        <label><input type="radio" name="pay"> Crypto</label><br><br>
+        <button class="btn btn-primary" onclick="pay()">Pay</button>
+        <button class="btn btn-outline" onclick="closeCheckout()">Cancel</button>
     </div>
 </div>
 
+<!-- ==================== 6️⃣ TOAST (Item added) ==================== -->
+<div class="toast" id="toast">Added ✔</div>
+
+<!-- ==================== 7️⃣ GIMMICKS – tło i efekty ==================== -->
+<div id="starfield"></div>            <!-- gwiazdy w tle -->
+<div id="led-strip"></div>            <!-- neonowy pasek dolny -->
+<div id="bouncing-ball"></div>        <!-- podskakująca kula -->
+<canvas id="fireworks"></canvas>      <!-- fireworks (canvas) -->
+
+<!-- ==================== 8️⃣ CURSOR ==================== -->
+<div class="cursor"></div>
+<div class="cursor-glow"></div>
+
 <script>
+/* ------------------------------------------------------------
+   0️⃣  DANE – sklepu (bez zmian, sekcja „fun” pusta)
+   ------------------------------------------------------------ */
 const data = {
-    subs:[
-        {name:"NigSense Basic",price:5},
-        {name:"NigSense Pro",price:15},
-        {name:"NigSense Ultra",price:30}
+    subs: [
+        {name:"Basic",   price:5},
+        {name:"Pro",     price:15},
+        {name:"Ultra",   price:30}
     ],
-    premium:[
-        {name:"Lifetime Access",price:99},
-        {name:"VIP Pack",price:49}
+    premium: [
+        {name:"Lifetime",price:99},
+        {name:"VIP",     price:49}
     ],
-    tools:[
+    tools: [
         {name:"Optimizer",price:12},
-        {name:"FPS Booster",price:10}
-    ]
+        {name:"Booster",  price:10}
+    ],
+    fun: []   // brak produktów – nie ma emoji
 };
 
-let cart=[];
+/* ------------------------------------------------------------
+   1️⃣  STAN KOSZYKA
+   ------------------------------------------------------------ */
+let cart = [];
 
-function show(cat){
-    const el=document.getElementById("products");
-    el.innerHTML="";
+/* ------------------------------------------------------------
+   2️⃣  REFERENCJE DO ELEMENTÓW
+   ------------------------------------------------------------ */
+const productsEl   = document.getElementById('products');
+const cartCountEl  = document.getElementById('cartCount');
+const cartItemsEl  = document.getElementById('cartItems');
+const cartPanelEl  = document.getElementById('cartPanel');
+const checkoutOverlay = document.getElementById('checkoutOverlay');
+const toastEl      = document.getElementById('toast');
+const catButtons   = document.querySelectorAll('.category-bar button');
 
-    data[cat].forEach(item=>{
-        el.innerHTML+=`
-        <div class="card">
-            <h3>${item.name}</h3>
-            <div class="price">$${item.price}</div>
-            <button onclick='add(${JSON.stringify(item)})'>Buy</button>
-        </div>`;
+/* ------------------------------------------------------------
+   3️⃣  RENDER – LISTA PRODUKTÓW
+   ------------------------------------------------------------ */
+function renderProducts(cat){
+    // podkręś aktywną zakładkę
+    catButtons.forEach(b=>b.classList.toggle('active', b.dataset.cat===cat));
+
+    productsEl.innerHTML = '';
+    data[cat].forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="placeholder"></div>
+            <div class="info">
+                <h3>${item.name}</h3>
+                <div class="price">$${item.price}</div>
+                <button class="btn btn-primary" data-name="${item.name}" data-price="${item.price}">Buy</button>
+            </div>`;
+        productsEl.appendChild(card);
     });
 }
 
-function add(item){
+/* ------------------------------------------------------------
+   4️⃣  LOGIKA KOSZYKA
+   ------------------------------------------------------------ */
+function addToCart(item, e){
     cart.push(item);
-    updateCart();
-    document.getElementById("modal").style.display="flex";
+    updateCartUI();
+    showToast();                     // krótkie powiadomienie „Added”
+    spawnFirework(e ? e.clientX : window.innerWidth/2,
+                 e ? e.clientY : window.innerHeight/2);
 }
-
-function updateCart(){
-    document.getElementById("cartCount").innerText=cart.length;
-    const list=document.getElementById("cartItems");
-    list.innerHTML="";
-    cart.forEach(i=>{
-        list.innerHTML+=`<div class="cart-item">${i.name} - $${i.price}</div>`;
+function updateCartUI(){
+    cartCountEl.textContent = cart.length;
+    cartCountEl.classList.add('added');
+    setTimeout(()=>cartCountEl.classList.remove('added'),300);
+    cartItemsEl.innerHTML = '';
+    cart.forEach(i => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.textContent = `${i.name} – $${i.price}`;
+        cartItemsEl.appendChild(div);
     });
 }
 
-function toggleCart(){
-    document.getElementById("cartPanel").classList.toggle("open");
+/* ------------------------------------------------------------
+   5️⃣  INTERAKCJE UI – przyciski, kategorie, koszyk
+   ------------------------------------------------------------ */
+catButtons.forEach(btn => {
+    btn.addEventListener('click', () => renderProducts(btn.dataset.cat));
+});
+
+productsEl.addEventListener('click', e => {
+    if (e.target.tagName === 'BUTTON'){
+        const name  = e.target.dataset.name;
+        const price = Number(e.target.dataset.price);
+        addToCart({name, price}, e);
+    }
+});
+
+/* ------------------------------------------------------------
+   6️⃣  KOSZYK – otwieranie / zamykanie
+   ------------------------------------------------------------ */
+function toggleCart(){ cartPanelEl.classList.toggle('open'); }
+function openCheckout(){
+    if (!cart.length){ alert('Koszyk pusty!'); return; }
+    checkoutOverlay.classList.add('show');
+}
+function closeCheckout(){ checkoutOverlay.classList.remove('show'); }
+function pay(){
+    const sel = document.querySelector('input[name="pay"]:checked');
+    if (!sel){ alert('Wybierz metodę płatności!'); return; }
+    alert('Płatność zakończona sukcesem! 🎉');
+    cart = []; updateCartUI(); closeCheckout();
 }
 
-function closeModal(){
-    document.getElementById("modal").style.display="none";
+/* ------------------------------------------------------------
+   7️⃣  TOAST
+   ------------------------------------------------------------ */
+function showToast(){
+    toastEl.classList.add('show');
+    setTimeout(()=>toastEl.classList.remove('show'),1600);
 }
 
-show("subs");
+/* ------------------------------------------------------------
+   8️⃣  FIREWORKS (canvas) – pozostaje bez zmian
+   ------------------------------------------------------------ */
+class Firework{
+    constructor(x,y){
+        this.particles=[];
+        const colors = ['#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93'];
+        for(let i=0;i<30;i++){
+            const angle = Math.random()*Math.PI*2;
+            const speed = Math.random()*3+2;
+            this.particles.push({
+                x, y,
+                vx: Math.cos(angle)*speed,
+                vy: Math.sin(angle)*speed,
+                life: Math.random()*30+30,
+                color: colors[Math.floor(Math.random()*colors.length)]
+            });
+        }
+    }
+    update(){
+        this.particles.forEach(p=>{
+            p.x+=p.vx; p.y+=p.vy;
+            p.vy+=0.05;               // grawitacja
+            p.life--;
+        });
+        this.particles = this.particles.filter(p=>p.life>0);
+    }
+    draw(ctx){
+        this.particles.forEach(p=>{
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, 2, 2);
+        });
+    }
+}
+const fireworks = [];
+function spawnFirework(x,y){ fireworks.push(new Firework(x,y)); }
+function renderFireworks(){
+    const canvas=document.getElementById('fireworks');
+    const ctx=canvas.getContext('2d');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    fireworks.forEach(f=>{f.update(); f.draw(ctx);});
+    for(let i=fireworks.length-1;i>=0;i--){
+        if(fireworks[i].particles.length===0) fireworks.splice(i,1);
+    }
+    requestAnimationFrame(renderFireworks);
+}
+renderFireworks();
+
+/* ------------------------------------------------------------
+   9️⃣  GWI‑STARS – tło gwiazd
+   ------------------------------------------------------------ */
+function createStars(num){
+    for(let i=0;i<num;i++){
+        const star=document.createElement('div');
+        star.className='star';
+        const size = Math.random()*2+1;
+        star.style.width = `${size}px`;
+        star.style.height= `${size}px`;
+        star.style.left = `${Math.random()*100}%`;
+        star.style.top  = `${Math.random()*100}%`;
+        star.style.animationDelay = `${Math.random()*5}s`;
+        document.getElementById('starfield').appendChild(star);
+    }
+}
+createStars(45);
+
+/* ------------------------------------------------------------
+   10️⃣  CURSOR – własny
+   ------------------------------------------------------------ */
+const c=document.querySelector('.cursor');
+const g=document.querySelector('.cursor-glow');
+document.addEventListener('mousemove',e=>{
+    c.style.left=`${e.clientX}px`;
+    c.style.top =`${e.clientY}px`;
+    g.style.left=`${e.clientX}px`;
+    g.style.top =`${e.clientY}px`;
+});
+document.addEventListener('mousedown',()=>{
+    c.style.transform='translate(-50%,-50%) scale(.7)';
+    g.style.transform='translate(-50%,-50%) scale(.9)';
+});
+document.addEventListener('mouseup',()=>{
+    c.style.transform='translate(-50%,-50%) scale(1)';
+    g.style.transform='translate(-50%,-50%) scale(1)';
+});
+
+/* ------------------------------------------------------------
+   11️⃣  INICJALIZACJA – domyślna kategoria
+   ------------------------------------------------------------ */
+renderProducts('subs');   // po załadowaniu pokaż Subscriptions
 </script>
-
 </body>
 </html>
